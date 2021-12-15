@@ -1,25 +1,55 @@
-import logo from './logo.svg';
-import './App.css';
+import * as React from 'react';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import { ChakraProvider, Text, Button, Box } from '@chakra-ui/react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    addCustomerAction,
+    removeCustomerAction,
+} from './store/customerReducer';
+import { fetchCustomers } from './sayncAction/customers';
+
+export default function App() {
+    const dispatch = useDispatch();
+    const cash = useSelector((state) => state.cash.cash);
+    const customers = useSelector((state) => state.customer.customers);
+    const addCash = (cash) => {
+        dispatch({ type: 'INCREMENT', payload: cash });
+    };
+    const removeCash = (cash) => {
+        dispatch({ type: 'DECREMENT', payload: cash });
+    };
+    const addCustomer = (name) => {
+        const customer = {
+            name,
+            id: Date.now(),
+        };
+        dispatch(addCustomerAction(customer));
+    };
+    const removeCustomer = (customer) => {
+        dispatch(removeCustomerAction(customer.id));
+    };
+    return (
+        <ChakraProvider>
+            <Button onClick={() => addCash(Number(prompt()))}>+</Button>
+            <Text m={4}>{cash}</Text>
+            <Button onClick={() => removeCash(Number(prompt()))}>-</Button>
+            <Button onClick={() => addCustomer(prompt())}>Add Customer</Button>
+            <Button onClick={() => dispatch(fetchCustomers())}>
+                Add Many Customers
+            </Button>
+            <Box my={4}>
+                {customers.length > 0 ? (
+                    <>
+                        {customers.map((customer) => (
+                            <Text onClick={() => removeCustomer(customer)}>
+                                {customer.name}
+                            </Text>
+                        ))}
+                    </>
+                ) : (
+                    <Text>No clients</Text>
+                )}
+            </Box>
+        </ChakraProvider>
+    );
 }
-
-export default App;
