@@ -10,7 +10,9 @@ import { fetchCustomers } from './sayncAction/customers';
 
 export default function App() {
     const dispatch = useDispatch();
+    // @ts-ignore
     const cash = useSelector((state) => state.cash.cash);
+    // @ts-ignore
     const customers = useSelector((state) => state.customer.customers);
     const addCash = (cash) => {
         dispatch({ type: 'INCREMENT', payload: cash });
